@@ -1,6 +1,3 @@
-import exceptions
-
-
 class AppleMusicException(Exception):
     pass
 
@@ -9,3 +6,6 @@ class AppleMusicClientException(AppleMusicException):
 
 class AppleMusicAuthException(AppleMusicException):
     pass
+
+
+#TO DO

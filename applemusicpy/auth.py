@@ -141,6 +141,7 @@ class Auth(AuthBase):
         if server.user_token:
             self.user_token = server.user_token
         else:
+            print(server.user_token)
             print("ERROR: cannot retrieve user token")
 
     def get_developer_token(self):
@@ -152,7 +153,7 @@ class Auth(AuthBase):
     def is_token_expired(self):
         if self.exp is None:
             return False
-        return datetime.now() <= self.exp
+        return not datetime.now() <= self.exp
 
     def _start_http_server(self, handler, source, endpoint):
         server = HTTPServer((self.address, self.port), handler)
