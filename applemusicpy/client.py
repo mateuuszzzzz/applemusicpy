@@ -1,3 +1,4 @@
+import json
 from urllib.parse import urljoin
 import requests
 from requests.models import HTTPError
@@ -55,7 +56,7 @@ class Client:
             'Authorization': 'Bearer {}'.format(self.auth.get_developer_token())
         }
 
-    def __call__(self, method, url, params, type):
+    def __call__(self, method, url, params, type = ResourceType.CATALOG, body = None):
         if type == ResourceType.CATALOG:
             headers = self._get_catalog_headers()
         elif type == ResourceType.LIBRARY:
@@ -70,16 +71,19 @@ class Client:
             try:
                 result = self._session.request(method, 
                                                 url, 
-                                                headers=headers, 
+                                                headers=headers,
+                                                json=body,
                                                 proxies=self.proxies, 
                                                 params=params,
                                                 timeout=self.requests_timeout)
                 result.raise_for_status()
+                if result.status_code == 204:
+                    return result
                 return result.json()
             except HTTPError as e:
-                pass #to do
+                print(e)
             except Exception as e:
-                pass
+                print(e)
             retries = retries + 1
     
     def _join(self, components):
@@ -312,4 +316,121 @@ class Client:
 
         return self.__call__('GET', url, params, type)
 
-    #TO DO
+    def music_video_relationship(self, 
+                                id, 
+                                relationship, 
+                                storefront = 'en', 
+                                params = None, 
+                                type = ResourceType.CATALOG
+                                ):
+
+        url = None
+
+        if type == ResourceType.CATALOG:
+            url = self._join(f'catalog/{storefront}/music-videos/{id}/{relationship}')
+        elif type == ResourceType.LIBRARY:
+            url = self._join(f'me/library/music-videos/{id}/{relationship}')
+        else:
+            print('ERROR')
+
+        return self.__call__('GET', url, params, type)
+
+    def music_video_relationship_view(self, 
+                                        id, 
+                                        view, 
+                                        storefront = 'en', 
+                                        params = None
+                                    ):
+
+        url = self._join(f'catalog/{storefront}/music-videos/{id}/view/{view}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def playlist(self, 
+                id, 
+                storefront = 'en', 
+                params = None, 
+                type = ResourceType.CATALOG
+                ):
+
+        url = None
+
+        if type == ResourceType.CATALOG:
+            url = self._join(f'catalog/{storefront}/playlists/{id}')
+        elif type == ResourceType.LIBRARY:
+            url = self._join(f'me/library/playlists/{id}')
+        else:
+            print('ERROR')
+
+        return self.__call__('GET', url, params, type)
+
+    def playlists(self, 
+                    storefront = 'en', 
+                    params = None, 
+                    type = ResourceType.CATALOG
+                ):
+
+        url = None
+
+        if type == ResourceType.CATALOG:
+            url = self._join(f'catalog/{storefront}/playlists')
+        elif type == ResourceType.LIBRARY:
+            url = self._join(f'me/library/playlists')
+        else:
+            print('ERROR')
+
+        return self.__call__('GET', url, params, type)
+
+    def playlist_relationship(self, 
+                                id, 
+                                relationship, 
+                                storefront = 'en', 
+                                params = None, 
+                                type = ResourceType.CATALOG
+                            ):
+        
+        url = None
+
+        if type == ResourceType.CATALOG:
+            url = self._join(f'catalog/{storefront}/playlists/{id}/{relationship}')
+        elif type == ResourceType.LIBRARY:
+            url = self._join(f'me/library/playlists/{id}/{relationship}')
+        else:
+            print('ERROR')
+
+        return self.__call__('GET', url, params, type)
+
+    def playlist_relationship_view(self, id, view, storefront = 'en', params = None):
+        
+        url = self._join(f'catalog/{storefront}/playlists/{id}/view/{view}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def create_playlist(self, body = None, params = None):
+
+        url = self._join(f'me/library/playlists')
+        return self.__call__('POST', url, params, ResourceType.LIBRARY, body)
+
+    def add_tracks_to_playlist(self, id, body = None, params = None):
+
+        url = self._join(f'me/library/playlists/{id}/tracks')
+        return self.__call__('POST', url, params, ResourceType.LIBRARY, body)
+
+    def playlist_folder(self, id, params = None):
+        
+        url = self._join(f'me/library/playlist-folders/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def playlist_folders(self, params = None):
+
+        url = self._join(f'me/library/playlist-folders')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def playlist_folder_relationship(self, id, relationship, params = None):
+
+        url = self._join(f'me/library/playlist-folders/{id}/{relationship}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def create_playlist_folder(self, body = None, params = None):
+
+        url = self._join(f'me/library/playlist-folders')
+        return self.__call__('POST', url, params, ResourceType.LIBRARY, body)
+    
