@@ -584,8 +584,6 @@ class Client:
         url = self._join(f'me/ratings/stations/{id}')
         return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
 
-    #personal library ratings
-
     def personal_library_album_rating(self, id, params = None):
 
         url = self._join(f'me/ratings/library-albums/{id}')
@@ -685,3 +683,98 @@ class Client:
 
         url = self._join(f'me/ratings/library-stations/{id}')
         return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def genre(self, id, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/genres/{id}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def genres(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/genres')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def charts(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/charts')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def activity(self, id, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/activities/{id}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def activities(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/activities')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def activity_relationship(self, id, relationship, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/activities/{id}/{relationship}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def record_label(self, id, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/record-labels/{id}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def record_labels(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/record-labels')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def record_label_relationship_view(self, id, view, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/record-labels/{id}/view/{view}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def recommendation(self, id, params = None):
+
+        url = self._join(f'me/recommendations/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def recommendations(self, params = None):
+
+        url = self._join(f'me/recommendations')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def recommendation_relationship(self, id, relationship, params = None):
+
+        url = self._join(f'me/recommendations/{id}/{relationship}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def heavy_rotation(self, params = None):
+
+        url = self._join(f'me/history/heavy-rotation')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def recently_played(self, params = None):
+
+        url = self._join(f'me/recent/played')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def recently_played_tracks(self, params = None):
+
+        url = self._join(f'me/recent/played/tracks')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def recently_played_stations(self, params = None):
+
+        url = self._join(f'me/recent/radio-stations')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def recently_added_resources(self, params = None):
+
+        url = self._join(f'me/library/recently-added')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def catalog_resources(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def library_resources(self, params = None):
+
+        url = self._join(f'me/library')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
