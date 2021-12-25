@@ -2,6 +2,8 @@ import json
 from urllib.parse import urljoin
 import requests
 from requests.models import HTTPError
+
+from applemusicpy.exceptions import ResourceTypeException
 from .auth import AuthBase
 from .auth import Auth
 from .types import *
@@ -112,7 +114,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/albums/{id}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -131,7 +133,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/albums/{id}/{relationship}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -157,7 +159,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/albums')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
         
         return self.__call__('GET', url, params, type)
 
@@ -179,7 +181,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/artists/{id}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
         
         return self.__call__('GET', url, params, type)
 
@@ -196,7 +198,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/artists')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -214,7 +216,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/artists/{id}/{relationship}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -242,7 +244,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/songs/{id}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -260,7 +262,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/songs')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -295,7 +297,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/music-videos/{id}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
         
         return self.__call__('GET', url, params, type)
 
@@ -312,7 +314,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/music-videos')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -331,7 +333,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/music-videos/{id}/{relationship}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -359,7 +361,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/playlists/{id}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -376,7 +378,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/playlists')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -395,7 +397,7 @@ class Client:
         elif type == ResourceType.LIBRARY:
             url = self._join(f'me/library/playlists/{id}/{relationship}')
         else:
-            print('ERROR')
+            raise ResourceTypeException()
 
         return self.__call__('GET', url, params, type)
 
@@ -434,3 +436,252 @@ class Client:
         url = self._join(f'me/library/playlist-folders')
         return self.__call__('POST', url, params, ResourceType.LIBRARY, body)
     
+    def station(self, id, storefront = 'en', params = None):
+        
+        url = self._join(f'catalog/{storefront}/stations/{id}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def stations(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/stations')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def station_genre(self, id, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/station-genres/{id}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def station_genres(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/station-genres')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def station_genre_relationship(self, id, relationship, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/station-genres/{id}/{relationship}')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def search(self, storefront = 'en', params = None, type = ResourceType.CATALOG):
+        
+        url = None
+
+        if type == ResourceType.CATALOG:
+            url = self._join(f'catalog/{storefront}/search')
+        elif type == ResourceType.LIBRARY:
+            url = self._join(f'me/library/search')
+        else:
+            raise ResourceTypeException()
+
+        return self.__call__('GET', url, params, type)
+
+    def hints(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/search/hints')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def suggestions(self, storefront = 'en', params = None):
+
+        url = self._join(f'catalog/{storefront}/search/suggestions')
+        return self.__call__('GET', url, params, ResourceType.CATALOG)
+
+    def personal_album_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/albums/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_music_video_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/music-videos/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_playlist_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/playlists/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_song_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/songs/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_station_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/stations/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_album_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/albums')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_music_video_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/music-videos')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_playlist_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/playlists')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_song_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/songs')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_station_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/stations')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def add_personal_album_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/albums/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_music_video_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/music-videos/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_playlist_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/playlists/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_song_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/songs/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_station_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/stations/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def delete_personal_album_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/albums/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_music_video_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/music-videos/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_playlist_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/playlists/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_song_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/songs/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_station_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/stations/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    #personal library ratings
+
+    def personal_library_album_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-albums/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_music_video_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-music-videos/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_playlist_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-playlists/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_song_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-songs/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_station_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-stations/{id}')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_album_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/library-albums')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_music_video_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/library-music-videos')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_playlist_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/library-playlists')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_song_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/library-songs')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def personal_library_station_ratings(self, params = None):
+
+        url = self._join(f'me/ratings/library-stations')
+        return self.__call__('GET', url, params, ResourceType.LIBRARY)
+
+    def add_personal_library_album_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/library-albums/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_library_music_video_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/library-music-videos/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_library_playlist_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/library-playlists/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_library_song_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/library-songs/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def add_personal_library_station_rating(self, id, body, params = None):
+
+        url = self._join(f'me/ratings/library-stations/{id}')
+        return self.__call__('PUT', url, params, ResourceType.LIBRARY, body)
+
+    def delete_personal_library_album_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-albums/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_library_music_video_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-music-videos/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_library_playlist_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-playlists/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_library_song_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-songs/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
+
+    def delete_personal_library_station_rating(self, id, params = None):
+
+        url = self._join(f'me/ratings/library-stations/{id}')
+        return self.__call__('DELETE', url, params, ResourceType.LIBRARY)
