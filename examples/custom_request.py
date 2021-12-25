@@ -1,4 +1,5 @@
 import applemusicpy
+from applemusicpy.client import ResourceType
 
 team_id = 'team_id'
 key_id = 'key_id'
@@ -14,4 +15,4 @@ params = {
     'limit': 3
 }
 
-print(client('GET', 'https://api.music.apple.com/v1/me/library/albums', params, 'library'))
+print(client('GET', 'https://api.music.apple.com/v1/me/library/albums', params, ResourceType.LIBRARY))
