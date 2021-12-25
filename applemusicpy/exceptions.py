@@ -8,4 +8,5 @@ class AppleMusicAuthException(AppleMusicException):
     pass
 
 
-#TO DO
+class ResourceTypeException(AppleMusicClientException):
+    pass
