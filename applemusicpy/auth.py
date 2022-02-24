@@ -1,12 +1,16 @@
 from abc import ABCMeta, abstractmethod
+from calendar import c
 import jwt
 from datetime import datetime, timedelta
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import webbrowser
 
+from applemusicpy.exceptions import AppleMusicAuthException
+
 class RequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+            self.server.get_count = self.server.get_count + 1
             self.send_response(200)
             self.send_header("Content-Type", "text/html")
             self.end_headers()
@@ -101,26 +105,32 @@ class Auth(AuthBase):
         </head>
         <body>
             <p>Authorization</p>
+            <button onclick="authorize()">Click to authorize</button>
             <script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
             <script> 
-                devtoken = '{token}';
-                const music = MusicKit.configure({{
-                    developerToken: devtoken,
+
+                function authorize() {{
+
+                    devtoken = '{token}';
+                    const music = MusicKit.configure({{
+                        developerToken: devtoken,
                         app: {{
                             name: 'applemusicpy',
                             build: '1.0.0'
                         }}
                     }});
 
-                music.authorize().then(musicUserToken => {{
-                    const response = fetch('{endpoint}',{{
-                        method: 'POST',
-                        headers: {{
-                            'Content-Type': 'text/html'
-                        }},
-                        body: musicUserToken
+                    music.authorize().then(musicUserToken => {{
+                        const response = fetch('{endpoint}',{{
+                            method: 'POST',
+                            headers: {{
+                                'Content-Type': 'text/html'
+                            }},
+                            body: musicUserToken
+                        }});
                     }});
-                }});
+                }}
+
             </script>
         </body>
         </html>
@@ -135,14 +145,16 @@ class Auth(AuthBase):
         except webbrowser.Error:
             print(f"Paste following url in your browser: {auth_url}")
 
-        server.handle_request() # GET REQUEST
-        server.handle_request() # POST REQUEST
+        server.handle_request()
+        server.handle_request()
+
+        if server.get_count == 2:
+            server.handle_request() # Some browsers might load page twice
 
         if server.user_token:
             self.user_token = server.user_token
         else:
-            print(server.user_token)
-            print("ERROR: cannot retrieve user token")
+            raise AppleMusicAuthException("Cannot retrieve user token")
 
     def get_developer_token(self):
         return self.developer_token
@@ -164,5 +176,6 @@ class Auth(AuthBase):
         server.source = source
         server.endpoint = endpoint
         server.user_token = None
+        server.get_count = 0
 
         return server
