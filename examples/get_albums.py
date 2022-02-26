@@ -11,13 +11,17 @@ with open(secret_file,'r') as f:
 auth = applemusicpy.Auth(secret_key=secret_key, key_id=key_id, team_id=team_id)
 client = applemusicpy.Client(auth=auth)
 
-
-# Library albums
+# Catalog albums
+ids = [1564530719, 1568819304]
+ids = [str(id) for id in ids]
 
 params = {
-    "ids": [1564530719,1568819304]
+    "ids": ','.join(ids)
 }
 
-print(client.albums(storefront='en', params=params, type=ResourceType.CATALOG))
+response = client.albums(storefront='us', params=params, type=ResourceType.CATALOG)
+print(response)
 
-# Catalog albums
+# Library albums
+response = client.albums(type=ResourceType.LIBRARY)
+print(response)
